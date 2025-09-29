@@ -9,35 +9,53 @@ Sockets Links.
  server .
 4. Send and receive the message using the send function in socket.
 ## PROGRAM
-
-Developed by : **AHAMED SAHUL HAMEED M**
-
-Reg no : **212224040016**
-
-### Client 
+### server:
 ```python
 import socket
-s=socket.socket()
-s.connect(('localhost',8001))
-while True:
-    msg=input("Client > ")
-    s.send(msg.encode())
-    print("Server > ",s.recv(1024).decode())
+
+HOST = '127.0.0.1'  
+PORT = 65432        
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+    server_socket.bind((HOST, PORT))
+    server_socket.listen()
+
+    print(f"Server is listening on {HOST}:{PORT}")
+    while True:
+        conn, addr = server_socket.accept()
+        with conn:
+            print(f"Connected by {addr}")
+            while True:
+                data = conn.recv(1024)
+                if not data:
+                    break
+                conn.sendall(data)
+                print(f"Echoed: {data.decode('utf-8')}")
 ```
-### Server
+### client:
 ```python
+
 import socket
-s=socket.socket()
-s.bind(('localhost',8001))
-s.listen(5)
-c,addr=s.accept()
-while True:
-    ClientMessage=c.recv(1024).decode()
-    c.send(ClientMessage.encode())
+
+HOST = '127.0.0.1'  
+PORT = 65432  
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+    client_socket.connect((HOST, PORT))
+
+    message = 'Hello, Server!'
+    client_socket.sendall(message.encode('utf-8'))
+
+    data = client_socket.recv(1024)
+    print(f"Received echo: {data.decode('utf-8')}")
 ```
-## OUPUT
-Refer to the following screenshot to view the output of the program.
-<img width="1846" height="383" alt="image" src="https://github.com/user-attachments/assets/f8566c42-091c-41ea-8550-5f723d977225" />
+## OUTPUT:
+### server:
+<img width="709" height="164" alt="image" src="https://github.com/user-attachments/assets/02dd7793-1a8f-494e-b6bc-a813ff7270e8" />
+
+
+### client:
+<img width="723" height="195" alt="image" src="https://github.com/user-attachments/assets/5d656724-840f-4bce-9cbd-7bf294e906d0" />
 
 ## RESULT
 Thus, the python program for creating Echo Client and Echo Server using TCP Sockets Links 
